@@ -1,0 +1,403 @@
+1. 首先对测试图像（文件名为：test1~test6）进行边缘检测，可采用书上介绍的Sobel等模板或者cann算子方法；
+%大图比较明显
+clear ;
+p=imread('test2.png');
+figure(1)
+imshow(p);
+title('test2.png的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(2)
+imshow(p1);
+title('test2.png经Sobel边缘检测的图像');
+figure(3)
+imshow(p2);
+title('test2.png经prewitt边缘检测的图像');
+figure(4)
+imshow(p3);
+title('test2.png经canny边缘检测的图像');
+
+
+clear ;
+p=imread('test3.jpg');
+figure(5)
+imshow(p);
+title('test3.jpg的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(6)
+imshow(p1);
+title('test3.jpg经Sobel边缘检测的图像');
+figure(7)
+imshow(p2);
+title('test3.jpg经prewitt边缘检测的图像');
+figure(8)
+imshow(p3);
+title('test3.jpg经canny边缘检测的图像');
+
+clear ;
+p=imread('test4.bmp');
+figure(9)
+imshow(p);
+title('test4.bmp的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(10)
+imshow(p1);
+title('test4.bmp经Sobel边缘检测的图像');
+figure(11)
+imshow(p2);
+title('test4.bmp经prewitt边缘检测的图像');
+figure(12)
+imshow(p3);
+title('test4.bmp经canny边缘检测的图像');
+
+
+clear ;
+p=imread('test5.png');
+figure(13)
+imshow(p);
+title('test5.png的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(14)
+imshow(p1);
+title('test5.png经Sobel边缘检测的图像');
+figure(15)
+imshow(p2);
+title('test5.png经prewitt边缘检测的图像');
+figure(16)
+imshow(p3);
+title('test5.png经canny边缘检测的图像');
+
+clear ;
+p=imread('test6.jpg');
+figure(17)
+imshow(p);
+title('test6.jpg的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(18)
+imshow(p1);
+title('test6.jpg经Sobel边缘检测的图像');
+figure(19)
+imshow(p2);
+title('test6.jpg经prewitt边缘检测的图像');
+figure(20)
+imshow(p3);
+title('test6.jpg经canny边缘检测的图像');
+
+clear ;
+p=imread('test1.tif');
+p=p(:,:,1);
+figure(21)
+imshow(p);
+title('test1.tif的原始图像');
+p1=edge(p,'sobel');
+p2=edge(p,'prewitt');
+p3=edge(p,'canny');
+figure(22)
+imshow(p1);
+title('test1.tif经Sobel边缘检测的图像');
+figure(23)
+imshow(p2);
+title('test1.tif经prewitt边缘检测的图像');
+figure(24)
+imshow(p3);
+title('test1.tif经canny边缘检测的图像');
+
+
+2. 在边缘检测的基础上，用hough变换检测图中直线；
+%改变阈值或极值点数
+clear
+p=imread('test1.tif');
+p=p(:,:,1);
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(1)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,10);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(2)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p=imread('test1.tif');
+p=p(:,:,1);
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(3)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,20);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(4)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
+
+clear ;
+p =imread('test2.png');
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(5)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('canny直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,3);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(6)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p =imread('test2.png');
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(7)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('sobel直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,20);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(8)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
+
+clear ;
+p =imread('test3.jpg');
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(9)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('canny直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,6);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(10)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p =imread('test3.jpg');
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(11)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('sobel直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,20);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(12)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
+
+clear ;
+p =imread('test4.bmp');
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(13)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('canny直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,9);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(14)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p =imread('test4.bmp');
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(15)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('sobel直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,20);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(16)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
+
+clear ;
+p =imread('test5.png');
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(17)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('canny直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,30);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(18)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p =imread('test5.png');
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(19)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('sobel直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,30);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(20)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
+
+clear ;
+p =imread('test6.jpg');
+BW = edge(p,'canny');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，T,R为计算霍夫变换的角度和半径值
+figure(21)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('canny直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,10);%提取极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(22)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('canny直线检测');
+
+clear ;
+p =imread('test6.jpg');
+BW = edge(p,'sobel');%Canny方法提取图像边界，返回二值图像(边界1,否则0)
+[H,T,R] = hough(BW);%计算二值图像的标准霍夫变换，H为霍夫变换矩阵，I,R为计算霍夫变换的角度和半径值
+figure(23)
+imshow(H,[],'XData',T,'YData',R,'InitialMagnification','fit');%hough变换的图像
+title('sobel直线检测');
+xlabel('\theta'), ylabel('\rho');
+axis on,axis square,hold on;
+P  = houghpeaks(H,30);%提取3个极值点
+x = T(P(:,2)); 
+y = R(P(:,1));
+plot(x,y,'s','color','white');%标出极值点
+lines=houghlines(BW,T,R,P);%提取线段
+figure(24)
+imshow(p), hold on;
+for k = 1:length(lines)
+xy = [lines(k).point1; lines(k).point2];
+ plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');%画出线段
+plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');%起点
+plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');%终点
+end
+title('sobel直线检测');
